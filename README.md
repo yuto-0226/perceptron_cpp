@@ -1,3 +1,10 @@
+# 感知機 PLA
+針對線性資料的分類
+![](./img/p_origin.png)
+
+訓練後
+![](./img/p_after.png)
+
 # 函式&變數
 + `dot()`，將兩向量(double)內積並回傳其值(double)。
 ```cpp
@@ -132,4 +139,95 @@ void train(int epochs,bool reset);
 + `to_str()`，把權重、偏置值及學習率轉換成字串後回傳。
 ```cpp
 std::string to_str();
+```
+
+# 預設資料集
+```cpp
+int main(){
+    std::vector<train_data> data;
+    int n_data=20;
+    int n_dimension=0;
+    double learning_rate=0;
+    double n_correct=0;
+    int n_epoch=0;
+    clock_t start,end;
+
+    for(size_t i=0;i<n_data;i++){
+        data.push_back(_data(i));
+    }
+    std::cout<<"data: \n";
+    for(int i=0;i<data.size();i++){
+        std::cout<<"["<<i<<"] "<<data[i].to_str()<<"\n";
+    }
+
+    std::cout<<"learning rate: ";
+    std::cin>>learning_rate;
+    std::cout<<"epoch: ";
+    std::cin>>n_epoch;
+
+    perceptron PLA(data, learning_rate);
+    start = clock();
+    PLA.train(n_epoch,false);
+    end = clock();
+
+    for(size_t i=0;i<n_data;i++){
+        std::cout<<"data["<<i<<"]: predict -> "<<
+        PLA.predict_type(data[i])<<", actual -> "<<data[i].to_str();
+        if(PLA.predict_type(data[i])==data[i].get_type()){
+            std::cout<<GREEN<<" ✓ \n"<<RESET;
+            n_correct+=1;
+        }else{
+            std::cout<<RED<<" x \n"<<RESET;
+        }
+    }
+    std::cout<<PLA.to_str()<<"\n";
+    std::cout<<"correct rate: "<<(n_correct/n_data)*100<<"%, time: "<<((double)end-start)/CLK_TCK;
+    
+    return 0;
+}
+```
+
+# 手動輸入資料集
+```cpp
+int main(){
+    std::vector<train_data> data;
+    int n_data=20;
+    double learning_rate=0;
+    double n_correct=0;
+    int n_epoch=0;
+    clock_t start,end;
+    std::cout<<"dimension: ";
+    std::cin>>n_dimension;
+    std::cout<<"data amount: ";
+    std::cin>>n_data;
+
+    for(size_t i=0;i<n_data;i++){
+        data.push_back(intput_data(n_dimension));
+    }
+
+    std::cout<<"learning rate: ";
+    std::cin>>learning_rate;
+    std::cout<<"epoch: ";
+    std::cin>>n_epoch;
+
+    perceptron PLA(data, learning_rate);
+    start = clock();
+    PLA.train(n_epoch,false);
+    end = clock();
+
+    for(size_t i=0;i<n_data;i++){
+        std::cout<<"data["<<i<<"]: predict -> "<<
+        PLA.predict_type(data[i])<<", actual -> "<<data[i].to_str();
+        if(PLA.predict_type(data[i])==data[i].get_type()){
+            std::cout<<GREEN<<" ✓ \n"<<RESET;
+            n_correct+=1;
+        }else{
+            std::cout<<RED<<" x \n"<<RESET;
+        }
+    }
+    std::cout<<PLA.to_str()<<"\n";
+    std::cout<<"correct rate: "<<(n_correct/n_data)*100<<"%, time: "<<((double)end-start)/CLK_TCK;
+    
+    return 0;
+}
 ```
